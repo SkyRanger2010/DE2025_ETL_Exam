@@ -266,7 +266,7 @@
 		if __name__ == "__main__":
 		    main()
 	    	```
-		</details>
+	</details>
    
 	- Kafka использует:
 	  - Протокол: `SASL_SSL`
