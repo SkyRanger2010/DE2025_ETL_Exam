@@ -140,8 +140,9 @@
 	    )
 	
 	    # Формирование DAG из указанных выше этапов
-	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster```
-	</details>
+	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster
+  	```
+</details>
   
 - Внутри скрипта-задания происходит загрузка, очистка и запись очищеных данных :
   - Приведение типов всех полей (`Integer`, `Boolean`, `Date`, `String`)
@@ -206,9 +207,10 @@
 		except Exception as e:
 		    print("❌ Общая ошибка:", e)
 	
-		spark.stop()```
+		spark.stop()
+ 	```
 	
- 	 </details> 
+</details> 
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
 - Создан кластер Data Proc, поднят Managed service for Kafka
