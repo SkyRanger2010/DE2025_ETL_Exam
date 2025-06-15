@@ -212,7 +212,7 @@
 	
 </details> 
 <details>
-<summary><i>Тут скриншоты</i></summary>
+	<summary><i>Тут скриншоты</i></summary>
 	
 - ![Скриншот](screenshots/screenshot4.jpg)
 	
