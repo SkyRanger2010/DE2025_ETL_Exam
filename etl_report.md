@@ -54,11 +54,9 @@
   </details> 
 - Создан трансфер данных с источником в YDB и приемником в Object Storage
   `s3a://etl-data-transform/transactions_v2.parquet`
-    <details>
-    <summary>Скриншот</summary>
-      -![скриншот1](screenshots/screenshot1.jpg)
-      -![скриншот2](screenshots/screenshot2.jpg)
-      -![скриншот3](screenshots/screenshot3.jpg)
+    	<details>
+    	<summary>Скриншот</summary>
+- ![Скриншот интерфейса](screenshots/screenshot1.jpg)
 	</details> 
 
 ### 1. 💨 Ingest: загрузка и очистка
