@@ -73,7 +73,7 @@
   
 	 ### Data-proc-DAG.py
   
-	    ```python
+	 ```python
 	    import uuid
 		import datetime
 		from airflow import DAG
@@ -141,7 +141,7 @@
 	
 	    # Формирование DAG из указанных выше этапов
 	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster
-	    ```
+	 ```
   </details> 
 - Внутри скрипта-задания происходит загрузка, очистка и запись очищеных данных :
   - Приведение типов всех полей (`Integer`, `Boolean`, `Date`, `String`)
