@@ -141,8 +141,8 @@
 	
 	    # Формирование DAG из указанных выше этапов
 	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster
-	```
-  </details> 
+		```
+</details> 
 - Внутри скрипта-задания происходит загрузка, очистка и запись очищеных данных :
   - Приведение типов всех полей (`Integer`, `Boolean`, `Date`, `String`)
   - Удаление строк с пустыми значениями
