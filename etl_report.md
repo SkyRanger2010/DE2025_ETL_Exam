@@ -56,7 +56,9 @@
   `s3a://etl-data-transform/transactions_v2.parquet`
     	<details>
     	<summary>Скриншот</summary>
-		- ![Скриншот интерфейса](screenshots/screenshot1.jpg)
+		- ![Скриншот](screenshots/screenshot1.jpg)
+  		- ![Скриншот](screenshots/screenshot2.jpg)
+  		- ![Скриншот](screenshots/screenshot3.jpg)
 	</details> 
 
 ### 1. 💨 Ingest: загрузка и очистка
