@@ -15,7 +15,7 @@
 
 - Вручную создана таблица в YDB
   <details>
-    <summary><i>Тут SQL скрипт</i></summary>_
+    <summary><i>Тут SQL скрипт</i></summary>
   
     ### sql-скрипт создания таблицы в YDB
     ```sql
@@ -35,7 +35,7 @@
   </details> 
 - В созданную таблицу с помощью CLI загружен датасет transaction_v2
   <details>
-    <summary>Тут bash скрипт</summary>
+    <summary><i>Тут bash скрипт</i></summary>
   
     ### bash-скрипт загрузки датасета
     ```bash
@@ -55,7 +55,7 @@
 - Создан трансфер данных с источником в YDB и приемником в Object Storage
   `s3a://etl-data-transform/transactions_v2.parquet`
     	<details>
-    	<summary>Тут скриншоты</summary>
+    	<summary><i>Тут скриншоты</i></summary>
 		- ![Скриншот](screenshots/screenshot1.jpg)
   		- ![Скриншот](screenshots/screenshot2.jpg)
   		- ![Скриншот](screenshots/screenshot3.jpg)
@@ -69,7 +69,7 @@
     - Запускает на кластере PySpark-задание для обработки Parquet-файла.
     - После завершения работы задания удаляет кластер.
   <details>
-    	<summary>Тут текст DAG</summary>
+    	<summary><i>Тут текст DAG</i></summary>
   
 	 ### Data-proc-DAG.py
   
@@ -151,7 +151,7 @@
 - Результат сохраняется в формате Parquet:
   - `s3a://etl-data-transform/transactions_v2_clean.parquet`
   <details>
-    <summary>Тут текст скрипта</summary>
+    <summary><i>Тут текст скрипта</i></summary>
   
 	### clean-data.py
 		  
@@ -213,7 +213,7 @@
 </details> 
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
-- Создан кластер Data Proc, поднят Managed service for Kafka
+- Создан кластер Data Proc, подняты Managed service for Kafka и Managed service for PostgreSQL.
 - В Object Storage помещены скрипты:  
 	- Скрипт `kafka-write.py`:
 	  - Загружает данные из Parquet-файла с очищенными данными.
@@ -221,7 +221,7 @@
 	  - Преобразует их в JSON.
 	  - Отправляет в Kafka-топик `dataproc-kafka-topic`.
    		<details>
-    		<summary>Тут текст скрипта</summary>
+    		<summary><i>Тут текст скрипта</i></summary>
   
 		### kafka-write.py
 			  
@@ -270,10 +270,82 @@
    		```	    	
 	</details>
    
-	- Kafka использует:
-	  - Протокол: `SASL_SSL`
-	  - Механизм: `SCRAM-SHA-512`
-
+	- Скрипт `kafka-read-stream.py`:
+	  - Каждые 10 секунд загружает новую порцию данных из потока топика Kafka.
+	  - Преобразует их из формата JSON.
+	  - Добавляет данные в таблицу `transactions_stream` БД PostgreSQL.
+   	<details>
+    		<summary><i>Тут текст скрипта</i></summary>
+  
+		### kafka-read-stream.py
+			  
+		```python
+		from pyspark.sql import SparkSession
+		from pyspark.sql.functions import from_json, col, to_date
+		from pyspark.sql.types import StructType, StringType, IntegerType, BooleanType
+		
+		def main():
+		    spark = SparkSession.builder \
+		        .appName("dataproc-kafka-read-to-postgres") \
+		        .getOrCreate()
+		
+		    schema = StructType() \
+		        .add("msno", StringType()) \
+		        .add("payment_method_id", IntegerType()) \
+		        .add("payment_plan_days", IntegerType()) \
+		        .add("plan_list_price", IntegerType()) \
+		        .add("actual_amount_paid", IntegerType()) \
+		        .add("is_auto_renew", BooleanType()) \
+		        .add("transaction_date", StringType()) \
+		        .add("membership_expire_date", StringType()) \
+		        .add("is_cancel", BooleanType())
+		
+		    kafka_df = spark.readStream.format("kafka") \
+		        .option("kafka.bootstrap.servers", "rc1a-sp0t812fps48sn74.mdb.yandexcloud.net:9091") \
+		        .option("subscribe", "dataproc-kafka-topic") \
+		        .option("kafka.security.protocol", "SASL_SSL") \
+		        .option("kafka.sasl.mechanism", "SCRAM-SHA-512") \
+		        .option("kafka.sasl.jaas.config",
+		                "org.apache.kafka.common.security.scram.ScramLoginModule required "
+		                "username=\"user1\" "
+		                "password=\"password1\";") \
+		        .option("startingOffsets", "latest") \
+		        .load()
+		
+		    parsed_df = kafka_df.selectExpr("CAST(value AS STRING) as json_str") \
+		        .select(from_json(col("json_str"), schema).alias("data")) \
+		        .select("data.*") \
+		        .withColumn("transaction_date", to_date(col("transaction_date"), "yyyy-MM-dd")) \
+		        .withColumn("membership_expire_date", to_date(col("membership_expire_date"), "yyyy-MM-dd"))
+		
+		    def write_to_postgres(batch_df, batch_id):
+		        batch_df.write \
+		            .format("jdbc") \
+		            .option("url", "jdbc:postgresql://rc1a-js3h73ecjbb295vc.mdb.yandexcloud.net:6432/db1") \
+		            .option("dbtable", "transactions_stream") \
+		            .option("user", "user1") \
+		            .option("password", "password1") \
+		            .option("driver", "org.postgresql.Driver") \
+		            .mode("append") \
+		            .save()
+		
+		    query = parsed_df.writeStream \
+		        .foreachBatch(write_to_postgres) \
+		        .option("checkpointLocation", "s3a://etl-dataproc/kafka-postgres-checkpoint") \
+		        .trigger(processingTime="10 seconds") \
+		        .start()
+		
+		    query.awaitTermination()
+		
+		if __name__ == "__main__":
+		    main()
+   		```	    	
+	</details>
+- Скрипты `kafka-read-stream.py` и `kafka-write.py` запущены как Pyspark-задания на кластере Data Proc
+	<details>
+    		<summary><i>Тут скриншоты</i></summary>
+   	</details>
+    
 ### 3. 📥 Чтение из Kafka и запись в PostgreSQL
 
 - Стриминговое приложение на PySpark:
