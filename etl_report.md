@@ -208,7 +208,7 @@
 	
 		spark.stop()
 	    ```
-  </details> 
+  	</details> 
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
 - Создан кластер Data Proc, поднят Managed service for Kafka
