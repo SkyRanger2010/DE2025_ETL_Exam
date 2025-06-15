@@ -219,6 +219,7 @@
 - ![Скриншот](screenshots/screenshot5.jpg)
   
 </details> 
+
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
 - Создан кластер Data Proc, подняты Managed service for Kafka и Managed service for PostgreSQL.
