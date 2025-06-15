@@ -68,8 +68,8 @@
     - Создает Data Proc кластер.      
     - Запускает на кластере PySpark-задание для обработки Parquet-файла.
     - После завершения работы задания удаляет кластер.
-  <details>
-    <summary>Тут текст DAG</summary>
+  	<details>
+    		<summary>Тут текст DAG</summary>
   
 	 ### Data-proc-DAG.py
   
@@ -140,8 +140,8 @@
 	    )
 	
 	    # Формирование DAG из указанных выше этапов
-	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster
-		```
+	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster```
+		
 </details> 
 - Внутри скрипта-задания происходит загрузка, очистка и запись очищеных данных :
   - Приведение типов всех полей (`Integer`, `Boolean`, `Date`, `String`)
