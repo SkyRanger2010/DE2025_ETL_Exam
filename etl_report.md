@@ -15,7 +15,7 @@
 
 - Вручную создана таблица в YDB
   <details>
-    *<summary>Тут SQL скрипт</summary>*
+    _<summary>Тут SQL скрипт</summary>_
   
     ### sql-скрипт создания таблицы в YDB
     ```sql
