@@ -220,12 +220,12 @@
 	  - Каждую секунду выбирает 100 случайных строк.
 	  - Преобразует их в JSON.
 	  - Отправляет в Kafka-топик `dataproc-kafka-topic`.
-     		<details>
-    			<summary>Тут текст скрипта</summary>
+   		<details>
+    		<summary>Тут текст скрипта</summary>
   
-			### kafka-write.py
+		### kafka-write.py
 			  
-			```python
+		```python
 			import time
 			from pyspark.sql import SparkSession
 			from pyspark.sql.functions import col, to_json, struct, rand
@@ -266,9 +266,9 @@
 		    	spark.stop()
 		
 			if __name__ == "__main__":
-			    main()```
-	    	
-		</details>
+			    main()
+   		```	    	
+	</details>
    
 	- Kafka использует:
 	  - Протокол: `SASL_SSL`
