@@ -206,9 +206,9 @@
 		except Exception as e:
 		    print("❌ Общая ошибка:", e)
 	
-		spark.stop()
-	```
-  </details> 
+		spark.stop()```
+	
+ 	 </details> 
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
 - Создан кластер Data Proc, поднят Managed service for Kafka
