@@ -11,7 +11,7 @@
 
 ## 🔧 Компоненты пайплайна
 
-### Задание 1. 💨 Работа с Yandex DataTransfer
+### Задание 1. 🔄️ Работа с Yandex DataTransfer
 
 - Вручную создана таблица в YDB
   <details>
@@ -61,7 +61,7 @@
   		- ![Скриншот](screenshots/screenshot3.jpg)
 	</details> 
 
-### Задание 2. 💨 Автоматизация работы с Yandex Data Processing при помощи Apache AirFlow
+### Задание 2.  🖥️ Автоматизация работы с Yandex Data Processing при помощи Apache AirFlow
 
 - Подготовлена инфраструктура (Managed service for Airflow)
 - Создан DAG **DATA_INGEST**, который:
@@ -71,7 +71,7 @@
   <details>
     <summary>Тут текст DAG</summary>
   
-	 ### DAG-INGEST
+	 ### Data-proc-DAG.py
   
 	    ```python
 	    import uuid
@@ -143,13 +143,72 @@
 	    create_spark_cluster >> poke_spark_processing >> delete_spark_cluster
 	    ```
   </details> 
-- Очистка данных:
+- Внутри скрипта-задания происходит загрузка, очистка и запись очищеных данных :
   - Приведение типов всех полей (`Integer`, `Boolean`, `Date`, `String`)
   - Удаление строк с пустыми значениями
   - Преобразование `transaction_date` и `membership_expire_date` из `yyyyMMdd` в `DateType`
 - Результат сохраняется в формате Parquet:
   - `s3a://etl-data-transform/transactions_v2_clean.parquet`
+  <details>
+    <summary>Тут текст скрипта</summary>
+  
+	### clean-data.py
+		  
+	```python
+		from pyspark.sql import SparkSession
+		from pyspark.sql.functions import col, to_date
+		from pyspark.sql.types import IntegerType, StringType, BooleanType
+		from pyspark.sql.utils import AnalysisException
+		
+		
+		# === Spark session ===
+		spark = SparkSession.builder.appName("Parquet ETL with Logging to S3").getOrCreate()
+		
+		
+		# === Пути ===
+		source_path = "s3a://etl-data-source/transactions_v2.csv"
+		target_path = "s3a://etl-data-transform/transactions_v2_clean.parquet"
+		
+		try:
+		    print(f"Чтение данных из: {source_path}")
+		    df = spark.read.option("header", "true").option("inferSchema", "true").csv(source_path)
+		
+		    print("Схема исходных данных:")
+		    df.printSchema()
+		
+		    # Приведение типов + формат даты YYYYMMDD
+		    df = df.withColumn("actual_amount_paid", col("actual_amount_paid").cast(IntegerType())) \
+		           .withColumn("is_auto_renew", col("is_auto_renew").cast(BooleanType())) \
+		           .withColumn("is_cancel", col("is_cancel").cast(BooleanType())) \
+		           .withColumn("membership_expire_date", to_date(col("membership_expire_date").cast("string"), "yyyyMMdd")) \
+		           .withColumn("msno", col("msno").cast(StringType())) \
+		           .withColumn("payment_method_id", col("payment_method_id").cast(IntegerType())) \
+		           .withColumn("payment_plan_days", col("payment_plan_days").cast(IntegerType())) \
+		           .withColumn("plan_list_price", col("plan_list_price").cast(IntegerType())) \
+		           .withColumn("transaction_date", to_date(col("transaction_date").cast("string"),  "yyyyMMdd"))
+		
+		    print("Схема преобразованных данных:")
+		    df.printSchema()
+		
+		    # Удаление строк с пропущенными значениями
+		    df = df.na.drop()
+		
+		    print("Пример данных после преобразования:")
+		    df.show(5)
+		
+		    print(f"Запись в Parquet: {target_path}")
+		    df.write.mode("overwrite").parquet(target_path)
+		
+		    print("✅ Данные успешно сохранены в Parquet.")
 
+		except AnalysisException as ae:
+		    print("❌ Ошибка анализа:", ae)
+		except Exception as e:
+		    print("❌ Общая ошибка:", e)
+	
+		spark.stop()
+	    ```
+  </details> 
 ### 2. 📤 Отправка в Kafka
 
 - Скрипт `parquet-to-kafka-loop.py`:
