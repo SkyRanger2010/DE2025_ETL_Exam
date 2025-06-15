@@ -55,7 +55,7 @@
 - Создан трансфер данных с источником в YDB и приемником в Object Storage
   `s3a://etl-data-transform/transactions_v2.parquet`
     	<details>
-    	<summary>Скриншот</summary>
+    	<summary>Скриншоты</summary>
 		- ![Скриншот](screenshots/screenshot1.jpg)
   		- ![Скриншот](screenshots/screenshot2.jpg)
   		- ![Скриншот](screenshots/screenshot3.jpg)
