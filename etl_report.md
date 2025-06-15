@@ -212,9 +212,12 @@
 	
 </details> 
 <details>
-    	<summary><i>Тут скриншоты</i></summary>
-		- ![Скриншот](screenshots/screenshot4.jpg)
-  		- ![Скриншот](screenshots/screenshot5.jpg)
+<summary><i>Тут скриншоты</i></summary>
+	
+- ![Скриншот](screenshots/screenshot4.jpg)
+	
+- ![Скриншот](screenshots/screenshot5.jpg)
+  
 </details> 
 ### Задание 3. 📤 Работа с топиками Apache Kafka® с помощью PySpark-заданий в Yandex Data Processing
 
