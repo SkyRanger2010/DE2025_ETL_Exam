@@ -341,10 +341,11 @@
 			    main()
 	 	```	    	
 	</details>
-	- Скрипты `kafka-read-stream.py` и `kafka-write.py` запущены как Pyspark-задания на кластере Data Proc
-		<details>
-	    		<summary><i>Тут скриншоты</i></summary>
-	   	</details>
+	
+ 	- Скрипты `kafka-read-stream.py` и `kafka-write.py` запущены как Pyspark-задания на кластере Data Proc
+	<details>
+	<summary><i>Тут скриншоты</i></summary>
+	</details>
     
 ### 3. 📥 Чтение из Kafka и запись в PostgreSQL
 
