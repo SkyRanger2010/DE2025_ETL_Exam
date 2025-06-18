@@ -352,9 +352,7 @@
 	</details>
 	
  	- Скрипты `kafka-read-stream.py` и `kafka-write.py` запущены как Pyspark-задания на кластере Data Proc
-	<details>
-	<summary><i>Тут скриншоты</i></summary>
-	</details>
+
     
 
 ### Задание 4. 📊 Визуализация в Yandex DataLens
